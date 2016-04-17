@@ -46,7 +46,7 @@ public class TraductorDR {
     }
     private class Simbolo
     {
-        public String simbolo;
+        public String nombre;
         public String tipo;
         public String valor;
         public boolean esArray;
@@ -54,7 +54,7 @@ public class TraductorDR {
         @Override
         public int hashCode() {
             int hash = 7;
-            hash = 53 * hash + Objects.hashCode(this.simbolo);
+            hash = 53 * hash + Objects.hashCode(this.nombre);
             return hash;
         }
 
@@ -67,7 +67,7 @@ public class TraductorDR {
                 return false;
             }
             final Simbolo other = (Simbolo) obj;
-            if (!Objects.equals(this.simbolo, other.simbolo)) {
+            if (!Objects.equals(this.nombre, other.nombre)) {
                 return false;
             }
             return true;
@@ -75,25 +75,50 @@ public class TraductorDR {
         
         public Simbolo()
         {
-            simbolo = new String("");
+            nombre = new String("");
             tipo    = new String("");
             valor   = new String("");
             esArray = false;
         }
         
-        public Simbolo(String simbolo, String tipo, String valor, boolean esArray)
+        public Simbolo(String nombre, String tipo, String valor, boolean esArray)
         {
-            this.simbolo    = simbolo;
+            this.nombre     = nombre;
             this.tipo       = tipo;
             this.valor      = valor;
             this.esArray    = esArray;
+        }
+    }
+    private class Ambito
+    {
+        public String nombre;
+        public ArrayList<Simbolo> simbolos;
+        public Ambito padre;
+        
+        public Ambito()
+        {
+            nombre      = new String("");
+            simbolos    = new ArrayList<Simbolo>();
+            padre       = null;
+        }
+        public Ambito(String nombre, Ambito padre)
+        {
+            this.nombre = nombre;
+            simbolos    = new ArrayList<Simbolo>();
+            this.padre  = padre;
+        }
+        public Ambito(String nombre)
+        {
+            this.nombre = nombre;
+            simbolos    = new ArrayList<Simbolo>();
+            this.padre  = padre;
         }
     }
 
     public Token token;
     public AnalizadorLexico analizadorLexico;
     public StringBuilder reglas;
-    public ArrayList<Simbolo> simbolos;
+    public ArrayList<Ambito> ambitos;
     public boolean imprimeReglas;
     public static boolean debug = false;
     
@@ -107,7 +132,7 @@ public class TraductorDR {
     private void init()
     {
         reglas = new StringBuilder();
-        simbolos = new ArrayList<Simbolo>();
+        ambitos = new ArrayList<Ambito>();
     }
     
     public final void emparejar(int tokEsperado)
@@ -164,14 +189,52 @@ public class TraductorDR {
             System.out.println(reglas);
     }
     
-    public boolean existeSimbolo(String simbolo)
+    public boolean existeSimbolo(String ambito, String simbolo)
     {
-        for(Simbolo s : simbolos)
+        Ambito a = new Ambito();
+        for(int i = 0; i < ambitos.size(); i++)
         {
-            if(s.simbolo.equals(simbolo))
-                return true;
+            a = ambitos.get(i);
+            if(a.nombre.equals(ambito))
+                break;
         }
-        return false;
+        while(true)
+        {
+            for(Simbolo s: a.simbolos)
+            {
+                if(s.nombre.equals(simbolo))
+                    return true;
+            }
+            if(a.padre != null)
+                a = a.padre;
+            else
+                return false;
+        }
+    }
+    public Simbolo getSimbolo(String ambito, String simbolo)
+    {
+        Ambito a = getAmbito(ambito);
+        while(true)
+        {
+            for(Simbolo s: a.simbolos)
+            {
+                if(s.nombre.equals(simbolo))
+                    return s;
+            }
+            if(a.padre != null)
+                a = a.padre;
+            else
+                return null;
+        }
+    }    
+    public Ambito getAmbito(String nombre)
+    {
+        for(Ambito a: ambitos)
+        {
+            if(a.nombre.equals(nombre))
+                return a;
+        }        
+        return new Ambito();
     }
     
     public void addRegla(int regla)
@@ -297,6 +360,9 @@ public class TraductorDR {
         Atributos atributos = new Atributos();
         if(token.tipo == Token.LLAVEI)
         {
+            // Cada vez que se abre un bloque se crea un nuevo ambito
+            ambitos.add(new Ambito(p_atributos.prefijo+"_"));
+            
             addRegla(7);
             emparejar(Token.LLAVEI);
             Atributos atr_secinstr = SecInstr(new Atributos("","","","","",p_atributos.prefijo + "_"));
@@ -394,7 +460,7 @@ public class TraductorDR {
             addRegla(12);
             String idlexema = token.lexema;
             // Si el simbolo ya se ha declarado antes, error semantico...
-            if(existeSimbolo(p_atributos.prefijo+idlexema))
+            if(existeSimbolo(p_atributos.prefijo, idlexema))
                 errorSemanticoIdRepetido();
             
             emparejar(Token.ID);
@@ -409,8 +475,8 @@ public class TraductorDR {
                 atributos.trad = p_atributos.th + atr_array.declaracion + " " + p_atributos.prefijo + idlexema + " = new " + p_atributos.th + atr_array.cuerpo + ";\n";
                 esArray = true;
             }
-            
-            simbolos.add(new Simbolo(p_atributos.prefijo+idlexema, p_atributos.tipo, "", esArray));
+            getAmbito(p_atributos.prefijo).simbolos.add(new Simbolo(idlexema, p_atributos.tipo, "", esArray));
+            //simbolos.add(new Simbolo(p_atributos.prefijo+idlexema, p_atributos.tipo, "", esArray));
         }
         else
             errorSintaxis(Token.ID);
@@ -489,11 +555,11 @@ public class TraductorDR {
         if(token.tipo == Token.ID)
         {
             addRegla(17);
-            String simbolo = new String(p_atributos.prefijo + token.lexema);
-            if(!existeSimbolo(simbolo))
+            //String simbolo = new String(p_atributos.prefijo + token.lexema);
+            if(!existeSimbolo(p_atributos.prefijo, token.lexema))
                 errorSemanticoIdNoDeclarado();
             
-            atributos.cuerpo = simbolo + " = ";
+            atributos.cuerpo = p_atributos.prefijo + token.lexema + " = ";
             emparejar(Token.ID);
             emparejar(Token.ASIG);
             atributos.cuerpo += Expr(new Atributos("", "","","","", p_atributos.prefijo)).trad +";\n";
@@ -600,6 +666,7 @@ public class TraductorDR {
         {
             Simbolo s = null;
             addRegla(27);
+            /*
             for(int i = 0; i < simbolos.size(); i++)
             {
                 if(simbolos.get(i).simbolo.equals(p_atributos.prefijo + token.lexema))
@@ -607,8 +674,9 @@ public class TraductorDR {
                     s = simbolos.get(i);
                     break;
                 }
-            }
-            if(s == null)
+            }*/
+            s = getSimbolo(getAmbito(p_atributos.prefijo).nombre, token.lexema);
+            if(s.nombre.isEmpty())
                 errorSemanticoIdNoDeclarado();
             
             atributos.trad = token.lexema;

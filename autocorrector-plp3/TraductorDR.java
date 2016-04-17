@@ -807,7 +807,7 @@
                         }
                         else
                         {
-                            p_atributos.trad = "(new Integer(" + atributos.trad +").toDouble()";
+                            p_atributos.trad = "(new Integer(" + p_atributos.trad +").toDouble()";
                         }
                         if(atr_factor.esvariable)
                         {

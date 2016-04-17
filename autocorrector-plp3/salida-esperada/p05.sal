@@ -1,0 +1,28 @@
+class TradC {
+
+
+public static void main(String[] args) {
+  Double main_da;
+  Double main_db;
+  Double main_dc;
+  Double main_dd;
+  Integer main_ea;
+  Integer main_eb;
+  Integer main_ec;
+  Integer main_ed;
+  Double main_nuevaD;
+  Integer main_nuevaI;
+  Double main_x;
+
+  main_da = new Double( (new Integer(2+1)).toDouble() );
+  main_db = new Double(2.0+(new Integer(1)).toDouble());
+  main_dc = new Double((new Integer(2)).toDouble()+1.0);
+  main_dd = new Double(2.0+1.0);
+  main_ea = new Integer(3+7);
+  main_nuevaD = new Double(11.0);
+  main_nuevaI = new Integer(12);
+  main_x = main_nuevaD;
+  main_nuevaD = new Double(main_x.doubleValue()/10.0);
+}
+}
+

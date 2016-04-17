@@ -1,0 +1,16 @@
+class TradC {
+
+
+public static void main(String[] args) {
+  Integer main_a;
+  Double main_b;
+
+  main_a = new Integer(7);
+  main_a = new Integer(main_a.intValue()/1);
+  main_b = new Double(7.5);
+  main_b = new Double(1.0*main_b.doubleValue());
+  main_b = new Double(main_a.toDouble()+main_b.doubleValue());
+  main_b = new Double(main_a.toDouble()+7.5/7.5*main_a.toDouble());
+}
+}
+

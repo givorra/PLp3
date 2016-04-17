@@ -1,0 +1,3 @@
+main()
+/* Error 2: fin de fichero inesperado
+ 

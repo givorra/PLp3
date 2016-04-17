@@ -1,0 +1,14 @@
+class TradC {
+
+main() {
+Integer main_a;
+Double main_b;
+
+main_a = 7;
+main_a = a;
+main_b = 7.5;
+main_b = 1.0;
+main_b = a;
+main_b = a;
+}
+}

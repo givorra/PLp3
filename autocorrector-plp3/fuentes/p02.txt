@@ -1,0 +1,8 @@
+main()
+{
+  int a; int b;
+
+  a = 7  
+  b = 8;  
+  /*     Error 3 (6,3): encontrado 'b', esperaba '*' o '/' '+' o '-' ';'    */
+}

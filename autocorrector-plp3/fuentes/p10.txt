@@ -1,0 +1,2 @@
+main main()
+/* Error 3 (1,6): encontrado 'main', esperaba '('  */

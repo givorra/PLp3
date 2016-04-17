@@ -1,0 +1,16 @@
+main()
+{
+  int a;
+
+  {
+    double b;
+
+    b=7;
+    {
+      int c;
+  
+      c = 8;
+    }
+  }
+  a = c; /* Error 6 (15,7): 'c' no ha sido declarado */
+}

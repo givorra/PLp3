@@ -1,0 +1,25 @@
+class TradC {
+
+public static double funsion() {
+  Integer funsion_a;
+  Integer[] funsion_aa = new Integer[10];
+  Double funsion_b;
+  Double funsion__c;
+
+  funsion_a = new Integer(7+3);
+  funsion_b = new Double( (new Integer(2+3*4)).toDouble() );
+  funsion_b = new Double(2.5*funsion_a.toDouble());
+  funsion__c = funsion_b;
+  funsion__c = new Double( funsion_a.toDouble() );
+}
+
+public static void main(String[] args) {
+  Double main_d;
+  Integer main__e;
+  Double main___e;
+
+  main_d = new Double(8.5);
+  main___e = new Double(main_d.doubleValue()-7.5);
+}
+}
+

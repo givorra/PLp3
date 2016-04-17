@@ -1,0 +1,6 @@
+main()
+{
+  double a;
+
+  a=7.;  /* Error 1 (5,6): caracter '.' incorrecto */
+}

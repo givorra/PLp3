@@ -1,0 +1,15 @@
+main()
+{
+  int a; int b,c[10];
+
+  a = 7;
+  b = 8;  
+{
+int a;
+int b;
+{
+int pepe;
+}
+}
+  /*     Error 3 (6,3): encontrado 'b', esperaba '*' o '/' '+' o '-' ';'    */
+}

@@ -1,0 +1,7 @@
+main()
+{
+  double a;
+
+  a = 7655:87;  /* Error 1 (5,11): caracter ':' incorrecto */
+
+}

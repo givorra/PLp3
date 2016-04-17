@@ -1,0 +1,3 @@
+main.3
+ /* Error 1 (1,5): caracter '.' incorrecto */
+ /* error lexico */

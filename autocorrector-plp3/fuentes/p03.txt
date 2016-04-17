@@ -1,0 +1,32 @@
+ 
+double funsion()
+{
+  int a,aa[10];
+  double b;
+ 
+  a = 7+3;
+  b = 2+3*4;
+  b = 2.5 * a;
+  {
+    double c;
+
+    c = b;
+    c = a;
+  }
+}
+
+main()
+{
+  double d;
+
+  {
+    d = 8.5;
+    int e;
+
+    {
+      double e;
+
+      e = d-7.5;
+    }
+  }
+}

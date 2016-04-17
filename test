@@ -1,7 +1,5 @@
 main()
 {
-  	int a;
-	{
-		a = 7;
-	}
+  	double a;
+	a = 3*3.5;
 }

@@ -605,12 +605,18 @@ public class TraductorDR {
     }
     public Atributos Term(Atributos p_atributos)
     {
+        // Term -> Factor { Term'.th=Factor.tipo; Term'.ch=Factor.trad; Term'.eh=Factor.esvariable} Term'
         Atributos atributos = new Atributos();
         if(token.tipo == Token.ID || token.tipo == Token.ENTERO || token.tipo == Token.REAL)
         {
             addRegla(22);
-            atributos.trad = Factor(new Atributos("", "","","","", p_atributos.prefijo)).trad;
-            atributos.trad += TermAux(new Atributos("", "","","","", p_atributos.prefijo)).trad;
+            Atributos atr_factor = Factor(new Atributos("", "","","","", p_atributos.prefijo));
+            //atributos.trad = atr_factor.trad;
+            Atributos a = new Atributos(atr_factor.trad, "", atr_factor.tipo,"","", p_atributos.prefijo);
+            a.esvariable = atr_factor.esvariable;
+            Atributos atr_termAux = TermAux(a);
+            atributos.trad += atr_termAux.trad;
+            atributos.tipo = atr_termAux.tipo;
         }
         else
             errorSintaxis(Token.ENTERO, Token.ID, Token.REAL);
@@ -623,12 +629,50 @@ public class TraductorDR {
         {
             addRegla(23);
             emparejar(Token.MULOP);
-            Factor(new Atributos("", "","","","", p_atributos.prefijo));
-            TermAux(new Atributos("", "","","","", p_atributos.prefijo));
+            Atributos atr_factor = Factor(new Atributos("", "","","","", p_atributos.prefijo));
+            
+            //if(!p_atributos.tipo.isEmpty())
+            if(atr_factor.tipo.equals(p_atributos.tipo))    // Si son dos factores del mismo tipo..
+            {
+                if(p_atributos.esvariable)
+                    atributos.trad += "." + p_atributos.trad + "Value()";
+                if(atr_factor.esvariable)
+                    atributos.trad += "." + p_atributos.trad + "Value()";
+            }
+            else    // diferentes
+            {
+                // El que sea int, hay q pasarlo a double
+                if(atr_factor.tipo.equals("int"))
+                {
+                   if(atr_factor.esvariable)
+                    {
+                        atr_factor.trad += ".toDouble()";
+                    }
+                    else
+                    {
+                        atr_factor.trad = "(new Integer(" + atr_factor.trad +")).toDouble()";
+                    }
+                }
+                else
+                {
+                    if(p_atributos.esvariable)
+                    {
+                        p_atributos.trad += ".toDouble()";
+                    }
+                    else
+                    {
+                        p_atributos.trad = "(new Integer(" + atributos.trad +")).toDouble()";
+                    }
+                }
+            }
+            
+            Atributos a = new Atributos(p_atributos.trad + "*" + atr_factor.trad, "","","","", p_atributos.prefijo);
+            atributos.trad = TermAux(a).trad;
         }
         else if(token.tipo == Token.ADDOP || token.tipo == Token.PYC)
         {
-            addRegla(24);            
+            addRegla(24);        
+            atributos.trad = p_atributos.trad;
         }
         else
             errorSintaxis(Token.MULOP, Token.ADDOP, Token.PYC);
@@ -660,20 +704,11 @@ public class TraductorDR {
         {
             Simbolo s = null;
             addRegla(27);
-            /*
-            for(int i = 0; i < simbolos.size(); i++)
-            {
-                if(simbolos.get(i).simbolo.equals(p_atributos.prefijo + token.lexema))
-                {
-                    s = simbolos.get(i);
-                    break;
-                }
-            }*/
             s = getSimbolo(getAmbito(p_atributos.prefijo).nombre, token.lexema);
             if(s.nombre.isEmpty())
                 errorSemanticoIdNoDeclarado();
             
-            atributos.trad = token.lexema;
+            atributos.trad = s.nombre;
             atributos.tipo = s.tipo;
             atributos.esvariable = true;
             emparejar(Token.ID);

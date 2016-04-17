@@ -1,0 +1,44 @@
+main()
+{
+/* TEST 1 */
+	double da;
+	double db;
+	double dc;
+	double dd;
+	int ea;
+	int eb;
+	int ec;
+	int ed;
+
+	/* primero operamos 2 + 1 y luego, al ser entero lo convertimos a real */
+	/* Trad: main_da = new Double((new Integer(2+1)).toDouble()); */
+	da = 2 + 1;
+	/* convertimos 1 a real y luego operamos */
+	/* Trad: main_db = new Double(2.0+(new Integer(1)).toDouble()); */
+	db = 2.0 + 1;
+	/* idem, convertimos 2 a real y luego operamos */
+	/* Trad: main_dc = new Double((new Integer(2)).toDouble()+1.0); */
+	dc = 2 + 1.0;
+	/* sin conversiones */
+	/* Trad: main_dd = new Double(2.0+1.0); */
+	dd = 2.0 + 1.0;
+	/* sin conversiones */
+	/* Trad: main_ea = new Integer(3+7); */
+	ea = 3 + 7;
+	/*eb = 3.0 + 7; --> error 8, eb, ec y ed deberan ser reales
+	ec = 3 + 7.0;
+	ed = 3.0 + 7.0;*/
+	double nuevaD;
+	/*Los literales se convierten en objetos, trad: main_nuevaD = new Double(11.0);*/
+	nuevaD = 11.0;
+	int nuevaI;
+	/*Los literales se convierten en objetos, trad: main_nuevaI = new Integer(12); */
+	nuevaI = 12;
+	double x;
+	/*ambos son objetos (Double main_nuevaD; y Double main_x;) y no se hace new */
+	x = nuevaD;
+	/*Las operaciones se hacen con escalares, si es un Double se pasa a double */
+	/*antes de operar. Trad:  main_nuevaD = new Double(main_x.doubleValue()/10.0);*/
+	nuevaD = x / 10.0;
+
+}

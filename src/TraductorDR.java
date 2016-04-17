@@ -191,13 +191,7 @@ public class TraductorDR {
     
     public boolean existeSimbolo(String ambito, String simbolo)
     {
-        Ambito a = new Ambito();
-        for(int i = 0; i < ambitos.size(); i++)
-        {
-            a = ambitos.get(i);
-            if(a.nombre.equals(ambito))
-                break;
-        }
+        Ambito a = getAmbito(ambito);
         while(true)
         {
             for(Simbolo s: a.simbolos)
@@ -221,7 +215,7 @@ public class TraductorDR {
                 if(s.nombre.equals(simbolo))
                     return s;
             }
-            if(a.padre != null)
+            if(!a.padre.nombre.equals(""))
                 a = a.padre;
             else
                 return null;
@@ -361,7 +355,7 @@ public class TraductorDR {
         if(token.tipo == Token.LLAVEI)
         {
             // Cada vez que se abre un bloque se crea un nuevo ambito
-            ambitos.add(new Ambito(p_atributos.prefijo+"_"));
+            ambitos.add(new Ambito(p_atributos.prefijo+"_", getAmbito(p_atributos.prefijo)));
             
             addRegla(7);
             emparejar(Token.LLAVEI);
